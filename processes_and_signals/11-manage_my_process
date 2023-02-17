@@ -24,7 +24,7 @@ stop)
     stop_action
     echo "manage_my_process stopped"
     ;;
-
+u
 restart)
     stop_action
     start_action
@@ -34,5 +34,4 @@ restart)
 *)
     echo "Usage: manage_my_process {start|stop|restart}"
     ;;
-esac
-
+esac 
