@@ -1,24 +1,38 @@
 #!/usr/bin/env bash
-#manages the manage_process
-file=/var/run/my_process.pid
-if [ "$1" == "start" ];
-then
-    ./manage_my_process &
-    sudo bash -c "echo $! > $file"
+# manages manage_my_process
+
+start_action() {
+	# starts manage_my_process in the background		
+	./manage_my_process &
+	# creates /var/run/my_process.pid with its PID inside
+	echo $!>/var/run/my_process.pid
+}
+stop_action() {
+    	kill manage_my_process	
+	pkill -f ./manage_my_process
+	# delete /var/run/my_process.pid with force option and sudo to make sure it’s deleted
+	sudo rm /var/run/my_process.pid
+}
+
+case "$1" in
+start)
+    start_action
     echo "manage_my_process started"
-elif [ "$1" == "stop" ];
-then
-    pkill -f ./manage_my_process
-    sudo rm $file
+    ;;
+
+stop)
+    stop_action
     echo "manage_my_process stopped"
-elif [ "$1" == "restart" ];
-then
-    pkill -f ./manage_my_process
-    sudo rm $file
-    ./manage_my_process &
-    sudo bash -c "echo $! > $file"
+    ;;
+
+restart)
+    stop_action
+    start_action
     echo "manage_my_process restarted"
-else
+    ;;
+
+*)
     echo "Usage: manage_my_process {start|stop|restart}"
-fi
+    ;;
+esac
 
